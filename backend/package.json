@@ -1,0 +1,14 @@
+{
+  "name": "url-shortener-backend",
+  "version": "1.0.0",
+  "description": "Url Shortener Backend",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thiago Baptista",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.15.3"
+  }
+}
