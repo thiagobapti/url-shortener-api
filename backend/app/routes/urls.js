@@ -6,7 +6,6 @@ const deleteIdPath = '/:id';
 /**
  * Handles GET http requests to @getIdPath 
  */
-
 router.get(getIdPath, function(req, res, next) {
 
   res.send('GET ' + getIdPath);
