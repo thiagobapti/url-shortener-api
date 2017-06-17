@@ -12,7 +12,8 @@
     "body-parser": "^1.17.2",
     "encodeurl": "^1.0.1",
     "express": "4.15.3",
-    "firebase": "^4.1.2"
+    "firebase": "^4.1.2",
+    "shortid": "^2.2.8"
   },
   "devDependencies": {
     "nodemon": "1.11.0"

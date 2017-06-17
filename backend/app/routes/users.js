@@ -2,6 +2,7 @@ const router = require('express').Router();
 const db = require('../utils/database');
 const httpUtils = require('../utils/http');
 const encodeUrl = require('encodeurl');
+const shortid = require('shortid');
 
 const postRootPath = '/';
 const postUserIdUrlsPath = '/:userid/urls';
@@ -14,7 +15,7 @@ router.post(postRootPath, function(req, res, next) {
 
 	var rawID, encodedID, usersRef, dbRequest;
 
-	if(!req.body || !req.body.id.trim()){
+	if(!req.body || !req.body.id || !req.body.id.trim()){
 
 		res.status(422)
 		.send('Parameter ID not present');
@@ -59,7 +60,56 @@ router.post(postRootPath, function(req, res, next) {
  */
 router.post(postUserIdUrlsPath, function(req, res, next) {
 
-  res.send('POST ' + postUserIdUrlsPath);
+	var rawUserId = req.params.userid;
+	var encodedUserId = encodeUrl(rawUserId);
+	var usersRef, urlsRef, url, dbRequest, urlId;
+
+	if(!req.body || !req.body.url || !req.body.url.trim()){
+
+		res.status(422)
+		.send('Parameter URL not present');
+
+		return;
+	}
+
+	usersRef = db.ref('/Users');
+	urlsRef = db.ref('/Urls');
+	url = req.body.url.trim();
+	
+	usersRef.orderByChild("id")
+	.equalTo(encodedUserId)
+	.once("value",
+		function(snapshot) {
+	  
+			usersRef.off();
+
+			if(snapshot.exists()){
+
+				urlId = shortid.generate();
+
+				var dbRequest = urlsRef.child(urlId).set({
+					'hits': 0,
+					'url': url,
+					'userId': encodedUserId
+				});
+
+				res.status(201)
+				.json({
+					'id': urlId,
+					'hits': 0,
+					'url': url,
+					'shortUrl': 'http://localhost:3000/' + urlId
+				});
+  				
+			}
+			else{
+
+		  		res.status(500).send('Invalid UserID');
+		  		
+		  }
+		}
+
+	);
 
 });
 
