@@ -1,5 +1,8 @@
 const router = require('express').Router();
+const db = require('../utils/database');
 const httpUtils = require('../utils/http');
+const encodeUrl = require('encodeurl');
+
 const postRootPath = '/';
 const postUserIdUrlsPath = '/:userid/urls';
 const getUserIdStatsPath = '/:userId/stats';
@@ -9,7 +12,45 @@ const getUserIdStatsPath = '/:userId/stats';
  */
 router.post(postRootPath, function(req, res, next) {
 
-  res.send('POST ' + postRootPath);
+	var rawID, encodedID, usersRef, dbRequest;
+
+	if(!req.body || !req.body.id.trim()){
+
+		res.status(422)
+		.send('Parameter ID not present');
+
+		return;
+	}
+
+	rawID = req.body.id.trim();
+	encodedID = encodeUrl(req.body.id.trim());
+	usersRef = db.ref('/Users');
+
+	usersRef.orderByChild("id")
+	.equalTo(encodedID)
+	.once("value",
+		function(snapshot) {
+	  
+			usersRef.off();
+
+			if(snapshot.exists())
+
+		  		res.status(409).send('User ' + rawID + ' already exists');
+
+			else{
+
+		  		dbRequest = usersRef.push({
+	    			id: encodedID 
+				});
+
+				res.status(201)
+				.json({
+					id: encodedID
+				});
+		  }
+		}
+
+	);
 
 });
 
