@@ -1,4 +1,5 @@
 const app = require('express')();
+const bodyParser = require('body-parser');
 
 const statsRoute = require('./app/routes/stats');
 const urlsRoute  = require('./app/routes/urls');
@@ -8,6 +9,15 @@ const otherRoute = require('./app/routes/other');
 
 app.set('port', process.env.PORT || '8080');
 
+/**
+ * Body Parser config
+ */
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+/**
+ * Routing
+ */
 app.use('/stats', statsRoute);
 app.use('/urls',  urlsRoute);
 app.use('/user',  userRoute);
