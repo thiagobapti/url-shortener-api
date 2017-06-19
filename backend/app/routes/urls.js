@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const db = require('../utils/database');
 const httpUtils = require('../utils/http');
 const getIdPath = '/:id';
 const deleteIdPath = '/:id';
@@ -17,7 +18,14 @@ router.get(getIdPath, function(req, res, next) {
  */
 router.delete(deleteIdPath, function(req, res, next) {
 
-  res.send('DELETE ' + deleteIdPath);
+	var rawUrlId = req.params.id;
+	var urlsRef;
+
+	urlsRef = db.ref('/Urls');
+
+	urlsRef.child(rawUrlId).remove();
+
+	res.status(204).send();
 
 });
 
