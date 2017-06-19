@@ -98,7 +98,7 @@ router.post(postUserIdUrlsPath, function(req, res, next) {
 					'id': urlId,
 					'hits': 0,
 					'url': url,
-					'shortUrl': 'http://localhost:3000/' + urlId
+					'shortUrl': 'http://' + req.get('host') + '/' + urlId
 				});
   				
 			}
@@ -118,7 +118,54 @@ router.post(postUserIdUrlsPath, function(req, res, next) {
  */
 router.get(getUserIdStatsPath, function(req, res, next) {
 
-  res.send('GET ' + getUserIdStatsPath);
+	var rawUserId = req.params.userId;
+	var encodedUserId = encodeUrl(rawUserId);
+	var usersRef = db.ref('/Users');
+	var urlsRef = db.ref('/Urls');
+
+	usersRef.orderByChild("id")
+	.equalTo(encodedUserId)
+	.once("value",
+		function(snapshot) {
+
+			var urls = [];
+	  
+			usersRef.off();
+
+			if(snapshot.exists()){
+
+				urlsRef.orderByChild("userId")
+				.equalTo(encodedUserId)
+				.once("value", function(snapshotUrls){
+
+					urlsRef.off();
+
+					snapshotUrls.forEach(function(url){
+
+						url.id = url.key;
+						url.shortUrl = 'http://' + req.get('host') + '/' + url.key;
+
+						urls.push({
+			    			id: url.key,
+			    			hits: url.val().hits,
+			    			url: url.val().url,
+			    			shortUrl: 'http://' + req.get('host') + '/' + url.key
+			    		});
+					});					
+  				
+  					res.status(200).json(urls);
+
+				});
+
+			}
+			else{
+
+		  		res.status(404).send('Invalid UserID');
+		  		
+		  }
+		}
+
+	);
 
 });
 
