@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const httpUtils = require('../utils/http');
+const db = require('../utils/database');
 const getRootPath = '/';
 const getIdPath = '/:id';
 
@@ -17,7 +18,34 @@ router.get(getRootPath, function(req, res, next) {
  */
 router.get(getIdPath, function(req, res, next) {
 
-  res.send('GET ' + getIdPath);
+	var rawUrlId = req.params.id;
+	var urlsRef = db.ref('/Urls');
+
+	urlsRef.child(rawUrlId).once("value", function(snapshot) {
+
+		var url;
+
+		urlsRef.off();
+
+    	if(snapshot.exists()){
+
+    		url = {
+    			id: snapshot.key,
+    			hits: snapshot.val().hits,
+    			url: snapshot.val().url,
+    			shortUrl: 'http://' + req.get('host') + '/' + snapshot.key
+    		};
+
+			res.status(200).json(url);
+
+    	} else{
+
+    		res.status(500).send('URL not found');
+
+    	}
+
+	});
+
 
 });
 
