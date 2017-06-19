@@ -9,7 +9,18 @@ const deleteIdPath = '/:id';
  */
 router.get(getIdPath, function(req, res, next) {
 
-  res.send('GET ' + getIdPath);
+	var rawUrlId = req.params.id;
+	var urlsRef = db.ref('/Urls');
+
+	urlsRef.child(rawUrlId).once("value", function(snapshot) {
+
+        urlsRef.off();
+
+		snapshot.ref.update({hits: snapshot.val().hits + 1});
+
+		return res.redirect(301, snapshot.val().url.substr(0,4) == 'http' ? snapshot.val().url : 'http://' + snapshot.val().url);
+
+    });
 
 });
 
