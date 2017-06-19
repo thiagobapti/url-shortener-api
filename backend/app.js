@@ -1,11 +1,12 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 
-const statsRoute = require('./app/routes/stats');
-const urlsRoute  = require('./app/routes/urls');
-const userRoute  = require('./app/routes/user');
-const usersRoute = require('./app/routes/users');
-const otherRoute = require('./app/routes/other');
+const defaultRoute = require('./app/routes/default');
+const statsRoute   = require('./app/routes/stats');
+const urlsRoute    = require('./app/routes/urls');
+const userRoute    = require('./app/routes/user');
+const usersRoute   = require('./app/routes/users');
+const otherRoute   = require('./app/routes/other');
 
 app.set('port', process.env.PORT || '8080');
 
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Routing
  */
+app.use('/', 	  defaultRoute);
 app.use('/stats', statsRoute);
 app.use('/urls',  urlsRoute);
 app.use('/user',  userRoute);
