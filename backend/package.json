@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Url Shortener Backend",
   "main": "app.js",
+  "engines": {
+    "node": "6.10.3"
+  },
   "scripts": {
     "dev": "nodemon app.js"
   },
