@@ -9,7 +9,52 @@ const getIdPath = '/:id';
  */
 router.get(getRootPath, function(req, res, next) {
 
-  res.send('GET ' + getRootPath);
+    var urlsRef = db.ref('/Urls');
+    var urlCount, topUrls;
+
+    urlsRef.once("value", function(snapshot) {
+
+        urlsRef.off();
+
+        urlCount = snapshot.numChildren();
+
+        urlsRef.once("value", function(snapshotUrls){
+
+            var urls = [];
+            var hits = 0;
+            
+            urlsRef.off();
+
+            function compare(a,b) {
+                if (a.hits < b.hits)
+                    return 1;
+                if (a.hits > b.hits)
+                    return -1;
+
+                return 0;
+            }
+
+            snapshotUrls.forEach(function(url){
+
+                urls.push({
+                    id: url.key,
+                    hits: url.val().hits,
+                    url: url.val().url,
+                    shortUrl: 'http://' + req.get('host') + '/' + url.key
+                });
+
+                hits = hits + url.val().hits;
+
+            });
+
+            res.json({
+                hits: hits,
+                urlCount: urlCount,
+                topUrls: urls.sort(compare).slice(0,10)
+            });
+        });
+
+    });
 
 });
 
