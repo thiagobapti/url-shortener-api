@@ -19,6 +19,8 @@ router.delete(deleteUserIdPath, function(req, res, next) {
 	.equalTo(encodedUserId)
 	.once("value", function(snapshot) {
 
+		usersRef.off();
+
     	snapshot.ref.remove();
 
 	});
