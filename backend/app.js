@@ -19,11 +19,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Routing
  */
-app.use('/', 	  defaultRoute);
 app.use('/stats', statsRoute);
 app.use('/urls',  urlsRoute);
 app.use('/user',  userRoute);
 app.use('/users', usersRoute);
+app.use('/', 	  defaultRoute);
 app.use('/*',     otherRoute);
 
 app.listen(app.get('port'));

@@ -15,9 +15,17 @@ router.get(getIdPath, function(req, res, next) {
 
         urlsRef.off();
 
-		snapshot.ref.update({hits: snapshot.val().hits + 1});
+        if(snapshot.exists()){
 
-		return res.redirect(301, snapshot.val().url.substr(0,4) == 'http' ? snapshot.val().url : 'http://' + snapshot.val().url);
+			snapshot.ref.update({hits: snapshot.val().hits + 1});
+
+			return res.redirect(301, snapshot.val().url.substr(0,4) == 'http' ? snapshot.val().url : 'http://' + snapshot.val().url);
+        
+        } else{
+
+        	return res.status(500).send('Url not found');
+
+        }
 
     });
 

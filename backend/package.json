@@ -7,7 +7,8 @@
     "node": "6.10.3"
   },
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "author": "Thiago Baptista",
   "license": "ISC",
