@@ -10,7 +10,8 @@ A Node + Firebase url shortener API
 * 1 - NodeJS 6.10.x
 * 2 - NPM 5.x
 * Clone the https://github.com/thiagosyncmob/url-shortener-api.git repository
-* Run the `npm run start` command inside /backend directory
+* Run the `npm install` command inside /backend directory to install all package dependencies
+* Run the `npm run start` command inside /backend directory to get the application up and running on port 8080(or process.env.PORT port)
 
 # Endpoints
 
